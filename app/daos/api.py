@@ -8,8 +8,6 @@ router = APIRouter()
 @router.get("", response_model=list[DaoRead], status_code=https_status.HTTP_200_OK)
 async def read_daos(daos: DaosCRUD = Depends(get_daos_crud)):
     daos = await daos.get_all()
-    if not daos:
-        return []
     return daos
 
 @router.post("", response_model=DaoRead, status_code=https_status.HTTP_200_OK)
