@@ -7,6 +7,7 @@ from app.router.api_v1.endpoints import api_router
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 # Import models here
+from app.daos.models import Dao
 
 
 async def create_tables():
@@ -52,4 +53,4 @@ if __name__ == '__main__':
     import uvicorn
 
     asyncio.run(create_tables())
-    uvicorn.run(app, host='0.0.0.0', port=8000, reload=True)
+    uvicorn.run(app, host='127.0.0.1', port=8000, reload=True)
