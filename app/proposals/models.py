@@ -7,6 +7,7 @@ from uuid import UUID
 class ProposalBase(SQLModel):
     created_by: str = Field(nullable=False)
     user_id: UUID = Field(default=None, nullable=False)
+    dao_id: UUID = Field(default=None, nullable=False)
     upvotes: int = Field(default=0, nullable=False)
     downvotes: int = Field(default=0, nullable=False)
     status: bool = Field(nullable=False)
