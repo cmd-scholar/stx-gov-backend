@@ -18,7 +18,7 @@ class DaosCRUD:
 
     async def get_all(self) -> list[DaoRead]:
         statement = select(Dao)
-        results = await self.session.execute(statement)
-        daos = results.scalars().all()
+        result = await self.session.execute(statement)
+        daos = result.scalars().all()
         return daos
 

@@ -1,10 +1,12 @@
 from fastapi import APIRouter
 from app.daos.api import router as daos_router
+from app.proposals.api import router as proposal_router
 api_router = APIRouter()
 include_api = api_router.include_router
 
 routers = [
-    (daos_router, "daos", "daos")
+    (daos_router, "daos", "daos"),
+    (proposal_router, "proposals", "proposals"),
 ]
 
 if len(routers) > 0:
