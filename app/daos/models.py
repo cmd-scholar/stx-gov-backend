@@ -10,11 +10,14 @@ class DaoBase(SQLModel):
     name: str = Field(nullable=False)
     about: str = Field(nullable=False)
 
-class Dao(TimestampModel, DaoBase, UUIDModel,table=True):
-    __tablename__='daos'
+
+class Dao(TimestampModel, DaoBase, UUIDModel, table=True):
+    __tablename__ = 'daos'
+
 
 class DaoCreate(DaoBase):
     ...
+
 
 class DaoRead(DaoBase, UUIDModel):
     ...
