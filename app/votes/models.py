@@ -19,3 +19,6 @@ class VoteBase(SQLModel):
 
 class Vote(VoteBase, UUIDModel, TimestampModel, table=True):
     __tablename__ = "votes"
+
+class VoteUpdate(SQLModel):
+    vote_type: str = Field(sa_column=Column("vote_type", vote_type, nullable=False))

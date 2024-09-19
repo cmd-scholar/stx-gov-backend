@@ -1,10 +1,12 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from typing import List
+from uuid import UUID
 
 from app.proposals.models import Proposal
-from app.votes.models import Vote, VoteBase
+from app.votes.models import Vote, VoteBase, VoteUpdate
 
 
 class VotesCRUD:
@@ -48,3 +50,41 @@ class VotesCRUD:
         result = await self.session.execute(statement)
         votes =  result.scalars().all()
         return list(votes)
+
+    async def update_vote(self, vote_id: UUID, data: VoteUpdate) -> VoteBase:
+        vote_statement = select(Vote).where(Vote.uuid == vote_id)
+        vote_result = await self.session.execute(vote_statement)
+        vote = vote_result.scalar_one_or_none()
+        if not vote:
+            raise HTTPException(status_code=404, detail="Vote does not exist.")
+
+        proposal_statement = select(Proposal).where(Proposal.uuid == vote.proposal_id)
+        proposal_result = await self.session.execute(proposal_statement)
+        proposal = proposal_result.scalar_one_or_none()
+
+        if not proposal:
+            raise HTTPException(status_code=404, detail="Proposal does not exist.")
+
+        old_vote_type = vote.vote_type
+        new_vote_type = data.vote_type
+
+        if old_vote_type != new_vote_type:
+            if vote.vote_type == "upvote":
+                proposal.upvotes -= 1
+            elif vote.vote_type == "downvote":
+                proposal.downvotes -= 1
+
+            if new_vote_type == "upvote":
+                proposal.upvotes += 1
+            elif new_vote_type == "downvote":
+                proposal.downvotes += 1
+
+        for key, val in data.model_dump(exclude_unset=True).items():
+            setattr(vote, key, val)
+
+        proposal.total_votes = proposal.upvotes + proposal.downvotes
+
+        await self.session.commit()
+        await self.session.refresh(vote)
+        await self.session.refresh(proposal)
+        return vote
