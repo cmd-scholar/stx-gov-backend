@@ -15,7 +15,8 @@ class DaoCreate(DaoBase):
     pass
 
 class DaoRead(DaoBase, UUIDModel):
-    creator: UserRead
+    pass
+    # creator: UserRead
 
 class DaoReadWithMembers(DaoRead):
     members: List[UserRead] = []

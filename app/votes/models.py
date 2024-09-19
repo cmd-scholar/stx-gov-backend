@@ -13,6 +13,7 @@ def _create_enums(metadata, conn, **kw):
     vote_type.create(conn, checkfirst=True)
 
 class VoteBase(SQLModel):
+    created_by_id : UUID = Field(nullable=False, foreign_key="users.uuid")
     proposal_id: UUID = Field(foreign_key="proposals.uuid", nullable=False)
     vote_type: str = Field(sa_column=Column("vote_type", vote_type, nullable=False))
 
