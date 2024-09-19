@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from uuid import UUID
+from datetime import datetime, timezone
 from app.proposals.models import ProposalCreate, Proposal, ProposalRead
 
 
@@ -8,8 +9,15 @@ class ProposalsCRUD:
     def __init__(self, session: AsyncSession):
         self.session = session
 
+    def _convert_to_naive_utc(self, dt: datetime) -> datetime:
+        if dt.tzinfo is not None:
+            return dt.astimezone(timezone.utc).replace(tzinfo=None)
+        return dt
+
     async def create(self, proposal: ProposalCreate) -> ProposalCreate:
         values = proposal.model_dump()
+        if 'end_date' in values and values['end_date'] is not None:
+            values['end_date'] = self._convert_to_naive_utc(values['end_date'])
         proposal = Proposal(**values)
         self.session.add(proposal)
         await self.session.commit()

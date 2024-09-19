@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 # Import models here
 from app.daos.models import Dao
+from app.votes.models import Vote
 from app.proposals.models import Proposal
 
 
