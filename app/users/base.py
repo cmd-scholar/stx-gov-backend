@@ -1,7 +1,10 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
-class UserProfile(SQLModel):
+from app.core.models import UUIDModel
+
+
+class UserProfile(UUIDModel, SQLModel):
     username: str = Field(min_length=3, max_length=30)
 
 class UserBase(UserProfile):
