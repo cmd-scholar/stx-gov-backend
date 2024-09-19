@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.daos.models import Dao
 from app.votes.models import Vote
 from app.proposals.models import Proposal
+from app.users.models import User
 
 
 async def create_tables():

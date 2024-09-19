@@ -17,6 +17,7 @@ from app.core.models import *
 from app.daos.models import Dao
 from app.proposals.models import Proposal
 from app.votes.models import Vote
+from app.users.models import User
 from sqlmodel import SQLModel
 
 sys.path.append(str(Path(__file__).parent.parent))
