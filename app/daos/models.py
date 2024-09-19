@@ -1,23 +1,21 @@
-from sqlmodel import SQLModel, Field
 
+from sqlmodel import Relationship
+from typing import List
 from app.core.models import TimestampModel, UUIDModel
-
-
-class DaoBase(SQLModel):
-    img: str = Field(nullable=False)
-    members: int = Field(nullable=False)
-    short_desc: str = Field(nullable=False)
-    name: str = Field(nullable=False)
-    about: str = Field(nullable=False)
-
+from app.daos.base import DaoBase
+from app.models.common import UserDaoLink
+from app.users.models import User, UserRead
 
 class Dao(TimestampModel, DaoBase, UUIDModel, table=True):
     __tablename__ = 'daos'
-
+    members: List[User] = Relationship(back_populates='daos', link_model=UserDaoLink)
+    creator: User = Relationship(back_populates="created_daos")
 
 class DaoCreate(DaoBase):
-    ...
-
+    pass
 
 class DaoRead(DaoBase, UUIDModel):
-    ...
+    creator: UserRead
+
+class DaoReadWithMembers(DaoRead):
+    members: List[UserRead] = []
