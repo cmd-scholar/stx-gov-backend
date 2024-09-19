@@ -6,7 +6,6 @@ from uuid import UUID
 
 class ProposalBase(SQLModel):
     created_by_id: UUID = Field(nullable=False, foreign_key="users.uuid")
-    # user_id: UUID = Field(nullable=False)
     dao_id: UUID = Field(nullable=False, foreign_key="daos.uuid")
     upvotes: int = Field(default=0, nullable=False)
     downvotes: int = Field(default=0, nullable=False)
