@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 from app.core.models import UUIDModel, TimestampModel
 from uuid import UUID
+from typing import List
 
 
 class ProposalBase(SQLModel):
@@ -20,6 +21,7 @@ class ProposalBase(SQLModel):
 class Proposal(ProposalBase, UUIDModel, TimestampModel, table=True):
     __tablename__ = "proposals"
     created_by: "User" = Relationship(back_populates="created_proposals")
+    votes: List["Vote"] = Relationship(back_populates="proposal", cascade_delete=True)
 
 
 class ProposalRead(UUIDModel, ProposalBase):
