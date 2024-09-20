@@ -1,9 +1,10 @@
 
 from uuid import UUID
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from sqlalchemy import Enum, event, Column
 from app.core.models import UUIDModel, TimestampModel
+from app.proposals.models import Proposal
 
 vote_type = Enum("upvote", "downvote", name="vote_type", create_type=False)
 
@@ -19,6 +20,7 @@ class VoteBase(SQLModel):
 
 class Vote(VoteBase, UUIDModel, TimestampModel, table=True):
     __tablename__ = "votes"
+    proposal: "Proposal" = Relationship(back_populates="votes")
 
 class VoteUpdate(SQLModel):
     vote_type: str = Field(sa_column=Column("vote_type", vote_type, nullable=False))

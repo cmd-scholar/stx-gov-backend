@@ -1,7 +1,11 @@
-from sqlalchemy import select
+from fastapi import HTTPException, status as https_status
+from sqlalchemy import select, delete
+from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel.ext.asyncio.session import AsyncSession
 from uuid import UUID
 from datetime import datetime, timezone
+
+from app.core.models import StatusMessage
 from app.proposals.models import ProposalCreate, Proposal, ProposalRead
 
 
@@ -36,3 +40,22 @@ class ProposalsCRUD:
         result = await self.session.execute(statement)
         proposal = result.scalars().first()
         return proposal
+
+    async def delete(self, proposal_id: UUID) -> StatusMessage:
+        try:
+            proposal = await self.get_by_id(proposal_id)
+            statement = delete(Proposal).where(Proposal.uuid == proposal_id)
+            await self.session.execute(statement)
+            await self.session.commit()
+
+            return StatusMessage(status=True, message='Proposal deleted')
+
+        except HTTPException as e:
+            if e.status_code == https_status.HTTP_404_NOT_FOUND:
+                raise e
+
+        except SQLAlchemyError as e:
+            await self.session.rollback()
+            raise HTTPException(
+                status_code=https_status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
