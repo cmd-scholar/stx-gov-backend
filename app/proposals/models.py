@@ -1,11 +1,11 @@
 from datetime import datetime
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 from app.core.models import UUIDModel, TimestampModel
 from uuid import UUID
 
 
 class ProposalBase(SQLModel):
-    created_by_id: UUID = Field(nullable=False, foreign_key="users.uuid")
+    created_by_id: UUID = Field(nullable=False, foreign_key="users.uuid", ondelete="CASCADE")
     dao_id: UUID = Field(nullable=False, foreign_key="daos.uuid")
     upvotes: int = Field(default=0, nullable=False)
     downvotes: int = Field(default=0, nullable=False)
@@ -19,6 +19,7 @@ class ProposalBase(SQLModel):
 
 class Proposal(ProposalBase, UUIDModel, TimestampModel, table=True):
     __tablename__ = "proposals"
+    created_by: "User" = Relationship(back_populates="created_proposals")
 
 
 class ProposalRead(UUIDModel, ProposalBase):

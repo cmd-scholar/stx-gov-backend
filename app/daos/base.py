@@ -7,4 +7,4 @@ class DaoBase(SQLModel):
     short_desc: str = Field(nullable=False)
     name: str = Field(nullable=False)
     about: str = Field(nullable=False)
-    created_by_id: UUID = Field(foreign_key="users.uuid")
+    created_by_id: UUID = Field(foreign_key="users.uuid", ondelete="CASCADE")
